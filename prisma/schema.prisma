@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  image    String
+
+  Post     Post[]
+  profile  Profile?
+  Comment  Comment[]
+  postRead PostRead[]
+
+
+
+  @@map("users")
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  text      String
+  image     String?
+  likes     Int?     @default(0)
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+
+  userId Int?
+
+  comments Comment[]
+  postRead PostRead[]
+
+  @@map("posts")
+}
+
+model PostRead {
+  id     Int @id @default(autoincrement())
+  userId Int @default(0)
+  postId Int @default(0)
+
+  post Post? @relation(fields: [postId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
+
+  @@map("post_reads")
+}
+
+model Comment {
+  id   Int    @id @default(autoincrement())
+  text String
+
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?
+
+  post   Post? @relation(fields: [postId], references: [id])
+  postId Int?
+
+
+  @@map("comments")
+}
+
+model Profile {
+  id   Int    @id @default(autoincrement())
+  name String
+  bio  String
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int?  @unique
+
+  @@map("profiles")
+}

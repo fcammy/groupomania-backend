@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `posts` MODIFY `likes` INTEGER NULL DEFAULT 0;
