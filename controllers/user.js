@@ -27,6 +27,12 @@ export const register = async (req, res, next) => {
         email: req.body.email,
         image: image,
         password: hash,
+        profile: {
+          create: {
+            name: req.body.name,
+            bio: "About me",
+          },
+        },
       },
     });
 
@@ -129,12 +135,6 @@ export const getCurrentUser = async (req, res, next) => {
       where: { id: Number(userId) },
       include: {
         profile: true,
-        // _count: {
-        //   select: {
-        //     Post: true,
-        //     Comment: true,
-        //   },
-        // },
       },
     });
     if (!user) throw Error("User not found");
@@ -145,7 +145,7 @@ export const getCurrentUser = async (req, res, next) => {
     count.comments = await db.comment.count({
       where: { userId: Number(userId) },
     });
-    //count.posts = await db.post.count({where: {userId: Number(userId)}});
+    count.posts = await db.post.count({ where: { userId: Number(userId) } });
 
     delete user.password;
 
@@ -194,31 +194,23 @@ export const updateUser = async (req, res, next) => {
 
 // API to delete a user
 
-export const deleteUser = async (req, res, next) => {
+export const deleteUser = async (req, res) => {
   try {
     const { userId } = req.auth;
 
     const user = await db.user.findUnique({
       where: { id: Number(userId) },
-      include: {
-        profile: true,
-        post: true,
-        comment: true,
-      },
     });
 
     if (!user) throw Error("User not found");
-
     const deletedUser = await db.user.delete({
       where: { id: Number(userId) },
     });
 
-    if (!deletedUser) throw Error("User not found");
-
     res.status(200).json({
       message: "User deleted successfully",
     });
-  } catch ({ message }) {
-    res.status(400).json({ message });
+  } catch ({ err }) {
+    res.status(400).json({ err });
   }
 };

@@ -33,6 +33,9 @@ export const createComment = async (req, res) => {
 
 export const getComments = async (req, res) => {
   const comments = await db.comment.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
     where: {
       postId: Number(req.params.id),
     },
