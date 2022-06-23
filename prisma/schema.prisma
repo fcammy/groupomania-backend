@@ -18,10 +18,11 @@ model User {
   password String
   image    String
 
-  Post     Post[]
-  profile  Profile?
-  Comment  Comment[]
-  postRead PostRead[]
+  post         Post[]
+  profile      Profile?
+  comment      Comment[]
+  notification Notification[]
+  // postRead PostRead[]
 
 
 
@@ -38,22 +39,35 @@ model Post {
 
   userId Int?
 
-  comments Comment[]
-  postRead PostRead[]
+  comments     Comment[]
+  notification Notification[]
+  // postRead PostRead[]
 
   @@map("posts")
 }
 
-model PostRead {
-  id     Int @id @default(autoincrement())
-  userId Int @default(0)
-  postId Int @default(0)
+model Notification {
+  id     Int     @id @default(autoincrement())
+  userId Int     @default(0)
+  postId Int     @unique @default(0)
+  read   Boolean
 
   post Post? @relation(fields: [postId], references: [id])
   user User? @relation(fields: [userId], references: [id])
 
-  @@map("post_reads")
+  @@map("notifications")
 }
+
+// model PostRead {
+//   id     Int @id @default(autoincrement())
+//   userId Int @default(0)
+//   postId Int @default(0)
+
+//   post Post? @relation(fields: [postId], references: [id])
+//   user User? @relation(fields: [userId], references: [id])
+
+//   @@map("post_reads")
+// }
 
 model Comment {
   id        Int      @id @default(autoincrement())

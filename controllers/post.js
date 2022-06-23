@@ -7,6 +7,7 @@ export const getAllPosts = async (req, res) => {
     },
     include: {
       user: true,
+      notification: true,
       comments: {
         include: {
           user: true,
@@ -36,7 +37,7 @@ export const getAllPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
   try {
-    const { text, image } = req.body;
+    // const { text, image } = req.body;
     //console.log({ text, image });
 
     //if (!text || !image) throw Error("Either image or text is required");
@@ -52,6 +53,29 @@ export const createPost = async (req, res) => {
         user: true,
       },
     });
+
+    const users = await db.user.findMany({
+      where: {
+        id: {
+          notIn: [req.auth.userId],
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    const userIds = users.map((u) => u.id);
+
+    for (const userId of userIds) {
+      await db.notification.create({
+        data: {
+          postId: post.id,
+          userId,
+          read: false,
+        },
+      });
+    }
 
     res.status(201).json(post);
   } catch (ex) {

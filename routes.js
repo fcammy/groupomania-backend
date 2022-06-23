@@ -37,7 +37,10 @@ import {
 } from "./controllers/post.js";
 import { createComment, getComments } from "./controllers/comment.js";
 import { likePost } from "./controllers/like.js";
-import { readPost, unreadPost } from "./controllers/read.js";
+import {
+  readNotification,
+  getAllNotifications,
+} from "./controllers/notification.js";
 import { uploadFile } from "./controllers/upload.js";
 import authMiddleware from "./middleware/auth.js";
 
@@ -66,7 +69,8 @@ router.get("/posts/:id/comments", authMiddleware, getComments);
 
 // Likes routes
 router.post("/posts/:id/likes", authMiddleware, likePost);
-router.post("/posts/:id/read", authMiddleware, readPost);
-router.delete("/posts/:id/read", authMiddleware, unreadPost);
+
+router.put("/posts/:id/read", authMiddleware, readNotification);
+router.get("/notifications", authMiddleware, getAllNotifications);
 
 export default router;
