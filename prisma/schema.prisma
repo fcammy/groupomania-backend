@@ -52,8 +52,8 @@ model Notification {
   postId Int     @unique @default(0)
   read   Boolean
 
-  post Post? @relation(fields: [postId], references: [id])
-  user User? @relation(fields: [userId], references: [id])
+  post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notifications")
 }
