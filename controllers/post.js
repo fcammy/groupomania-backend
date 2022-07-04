@@ -17,31 +17,11 @@ export const getAllPosts = async (req, res) => {
     take: 10,
   });
 
-  // const output = [];
-  // posts.forEach(async (post) => {
-  //   const read = await db.postRead.findFirst({
-  //     where: {
-  //       postId: Number(post.id),
-  //       userId: req.auth.userId,
-  //     },
-  //     include: {
-  //       post: true,
-  //       user: true,
-  //     },
-  //   });
-  //   output = [...output, { ...post, read: !!read }];
-  // });
-
   res.json(posts);
 };
 
 export const createPost = async (req, res) => {
   try {
-    // const { text, image } = req.body;
-    //console.log({ text, image });
-
-    //if (!text || !image) throw Error("Either image or text is required");
-
     const post = await db.post.create({
       data: {
         text: req.body.text,

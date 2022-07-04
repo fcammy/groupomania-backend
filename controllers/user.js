@@ -95,6 +95,8 @@ export const getAllUsers = async (req, res, next) => {
       profile: true,
     },
   });
+  delete [users.password];
+
   if (!users) {
     res.status(400).json({
       message: "No users found",
@@ -115,6 +117,8 @@ export const getOneUser = async (req, res, next) => {
       profile: true,
     },
   });
+  delete user.password;
+
   if (!user) {
     res.status(400).json({
       message: "No user found",
